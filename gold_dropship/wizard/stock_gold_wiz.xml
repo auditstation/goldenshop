@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock_gold_wizard_form" model="ir.ui.view">
+        <field name="name">stock.gold.wizard.form</field>
+        <field name="model">stock.gold</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Information">
+                <group>
+                    <field name="price_per_gram"/>
+                    <field name="location_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="open_view_report" string="Print" type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="stock_gold_action" model="ir.actions.act_window">
+        <field name="name">Gold Dashboard</field>
+        <field name="res_model">stock.gold</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

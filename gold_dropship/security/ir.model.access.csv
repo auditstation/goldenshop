@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_po_info_wizard,access.po.info.wizard,model_po_info_wizard,,1,1,1,1
+access_stock_gold,access.stock.gold,model_stock_gold,,1,1,1,1

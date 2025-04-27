@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        name="Gold Dashborad"
+        action="gold_dropship.stock_gold_action"
+        id="stock_gold_menu"
+        groups="stock.group_stock_manager"
+        parent="stock.menu_warehouse_report" sequence="200"/>
+
+</odoo>

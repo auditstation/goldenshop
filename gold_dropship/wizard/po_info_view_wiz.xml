@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="po_info_wizard_form" model="ir.ui.view">
+        <field name="name">po.info.wizard.form</field>
+        <field name="model">po.info.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Information">
+                <group>
+                    <field name="payment_method"/>
+                </group>
+                <group invisible="payment_method != 'gold' ">
+                    <field name="product_id"/>
+                    <field name="product_uom_id"/>
+                    <field name="unit_price" invisible="1"/>
+                    <field name="unit_price_update"/>
+
+                    <field name="supplier_taxes_id" widget="many2many_tags"/>
+                    <field name="qty"/>
+                </group>
+                <footer>
+                    <button name="confirm_button" string="Confirm" type="object"
+                            class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_po_info_wizard_form" model="ir.actions.act_window">
+        <field name="name">Purchase Informtion</field>
+        <field name="res_model">po.info.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+</odoo>

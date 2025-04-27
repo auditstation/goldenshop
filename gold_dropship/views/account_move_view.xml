@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_move_inherit" model="ir.ui.view">
+        <field name="name">view.sccount.move.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='due_date']" position="after">
+                <field name="payment_method"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='invoice_tab']/field[@name='invoice_line_ids']/list/field[@name='quantity']" position="after">
+                <field optional="show" name="purity" column_invisible="parent.move_type not in ['in_invoice','in_refund']" invisible="move_type not in ['in_invoice','in_refund']"/>
+                <field optional="show" name="pure_gold" column_invisible="parent.move_type not in ['in_invoice','in_refund']"  invisible="move_type not in ['in_invoice','in_refund']"/>
+            </xpath>
+
+        </field>
+    </record>
+
+
+</odoo>
+

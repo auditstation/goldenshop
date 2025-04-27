@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_gold_dashboard_template">
+            <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <!-- Header -->
+                <div class="text-center">
+                    <h2 style="margin: 0 0 20px 0;">Gold Dashboard</h2>
+                </div>
+
+                <!-- Table -->
+                <table class="table table-sm table-bordered" style="width: 100%;">
+                    <thead>
+                        <tr style="background-color: #f0f0f0;">
+                            <th>Product</th>
+                            <th>Quantity (g)</th>
+                            <th>Valuation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <!-- Regular Gold Line -->
+                        <tr class="text-center">
+                            <td>Gold</td>
+                            <td>
+                                <t t-esc="data.get('gold_qty')"/>
+                            </td>
+                            <td>
+                                <t t-esc="data.get('gold_valuation')"/>
+                            </td>
+                        </tr>
+
+                        <!-- Broken Gold Line -->
+                        <tr class="text-center">
+                            <td>Broken Gold</td>
+                            <td>
+                                <t t-esc="data.get('broken_gold_qty')"/>
+                            </td>
+                            <td>
+                                <t t-esc="data.get('broken_gold_valuation')"/>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </t>
+            </t>
+        </template>
+
+        <record id="action_report_gold_dashboard" model="ir.actions.report">
+            <field name="name">Gold Report</field>
+            <field name="model">stock.gold</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">gold_dropship.report_gold_dashboard_template</field>
+            <field name="report_file">gold_dropship.report_gold_dashboard_template</field>
+            <!-- <field name="print_report_name">(object._get_report_base_filename())</field> -->
+            <field name="binding_model_id" ref="gold_dropship.model_stock_gold"/>
+            <field name="binding_type">report</field>
+           
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="account_report_edit.ExtendedAccountReportFilters" t-inherit="account_reports.AccountReportFiltersCustomizable"> 
+
+        <xpath expr="//div[@id='filter_extra_options']" position="before"> 
+
+            <Dropdown>
+                <button class="btn btn-secondary">
+                    <i class="fa fa-filter me-1"/>UOM
+                </button>
+
+                <t t-set-slot="content">
+                    <div class="dropdown-item gap-2 align-items-center">
+                        <!-- <label>UOM</label> -->
+                        <MultiRecordSelector t-props="getMultiRecordSelectorProps('uom.uom', 'product_uom_id')"/>
+                    </div>
+                </t>
+            </Dropdown>
+
+
+        </xpath> 
+    </t>
+</templates>

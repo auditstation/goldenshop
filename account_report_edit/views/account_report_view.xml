@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_account_report_form" model="ir.ui.view"> 
+	<field name="name">view.account.report.form</field> 
+	<field name="model">account.report</field> 
+	<field name="inherit_id" ref="account_reports.account_report_form"/> 
+	<field name="arch" type="xml"> 
+	<xpath expr="//field[@name='filter_partner']" position="after"> 
+	<field name="filter_uom" /> 
+	</xpath> 
+	</field> 
+	 </record>
+
+     </odoo>
+  

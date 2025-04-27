@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="product_template_form_view_gold" model="ir.ui.view">
+        <field name="name">product.template.form.inherit.gold</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='options']" position="inside">
+                <span class="d-inline-flex">
+                    <field name="is_gold"/>
+                    <label for="is_gold"/>
+                </span>
+            </xpath>
+        </field>
+    </record>
+     <record id="product_normal_form_view_gold" model="ir.ui.view">
+        <field name="name">product.product.form.inherit.gold</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='options']" position="inside">
+                <span class="d-inline-flex">
+                    <field name="broken_gold"/>
+                    <label for="broken_gold"/>
+                </span>
+            </xpath>
+        </field>
+    </record>
+</odoo>
