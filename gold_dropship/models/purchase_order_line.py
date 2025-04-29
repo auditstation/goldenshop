@@ -39,7 +39,7 @@ class PurchaseOrderLineInherit(models.Model):
         super()._compute_price_unit_and_date_planned_and_name()
 
         for line in self:
-            if line.product_id.is_gold or rec.product_id.broken_gold:
+            if line.product_id.is_gold or line.product_id.broken_gold:
                 base_url = self.env['ir.config_parameter'].sudo().get_param('report.url') or self.env[
                 'ir.config_parameter'].sudo().get_param('web.base.url')
                 url = base_url + '/gold_dropship/api/get_price'

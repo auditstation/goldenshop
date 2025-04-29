@@ -10,10 +10,14 @@
                     <field name="is_gold"/>
                     <label for="is_gold"/>
                 </span>
+                <span class="d-inline-flex">
+                    <field name="broken_gold"/>
+                    <label for="broken_gold"/>
+                </span>
             </xpath>
         </field>
     </record>
-     <record id="product_normal_form_view_gold" model="ir.ui.view">
+     <!-- <record id="product_normal_form_view_gold" model="ir.ui.view">
         <field name="name">product.product.form.inherit.gold</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
@@ -25,5 +29,5 @@
                 </span>
             </xpath>
         </field>
-    </record>
+    </record> -->
 </odoo>
