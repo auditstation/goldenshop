@@ -16,7 +16,7 @@ class SaleOrderInherit(models.Model):
     ], required=True, default='cash', readonly=True,copy=False)
     po_id = fields.Many2one('purchase.order', readonly=True,copy=False)
     def action_confirm(self):
-        if not self.env.context.get('no_check') and (any(self.order_line.mapped('product_id').mapped('is_gold')) or any(self.order_line.mapped('product_id').mapped('broken_gold'))):
+        if not self.env.context.get('no_check') :
             return self.open_po_info_wizard()
         return super(SaleOrderInherit, self).action_confirm()
 

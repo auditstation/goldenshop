@@ -6,9 +6,10 @@
         <field name="arch" type="xml">
             <form string="Purchase Information">
                 <group>
-                    <field name="payment_method"/>
+                    <field name="check_true" invisible="1"/>
+                    <field name="payment_method" readonly="check_true"/>
                 </group>
-                <group invisible="payment_method != 'gold' ">
+                <group invisible="not check_true">
                     <field name="product_id"/>
                     <field name="product_uom_id"/>
                     <field name="unit_price" invisible="1"/>
@@ -20,8 +21,10 @@
                     <field name="qty"/>
                 </group>
                 <footer>
+                    <button name="confirm_check" string="Confirm" type="object"
+                            class="btn-primary" invisible="check_true"/>
                     <button name="confirm_button" string="Confirm" type="object"
-                            class="btn-primary"/>
+                            class="btn-primary" invisible="not check_true"/>
                     <button string="Discard" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>

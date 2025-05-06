@@ -27,6 +27,22 @@ class PoInfoWizard(models.TransientModel):
     company_id = fields.Many2one('res.company', readonly=True,
                                  default=lambda self:self.env.company,ondelete='cascade')
     
+    check_true = fields.Boolean(readonly=True)
+
+    def confirm_check(self):
+        if self.payment_method == 'cash':
+            self.confirm_button()
+        else:
+            self.check_true = True
+            self.sale_id = self.sale_id.id
+            return {
+            'type': 'ir.actions.act_window',
+            'res_model': self._name,
+            'res_id': self.id,
+            'view_mode': 'form',
+            'target': 'new'}
+        
+    
     @api.depends('payment_method','currency_id')
     def _compute_unit_price_update(self):
         for rec in self:
@@ -53,10 +69,10 @@ class PoInfoWizard(models.TransientModel):
                 rec.supplier_taxes_id = rec.product_id.with_company(self.env.company).supplier_taxes_id
     
     def confirm_button(self):
-        sale_order = self.env['sale.order'].browse(self.env.context.get('active_id')) or self.sale_id
-        if self.payment_method == 'gold' and not self.sale_id.po_id:
+        sale_order = self.sale_id
+        if self.payment_method == 'gold' and not self.sale_id.po_id and self.check_true:
             self.create_po()
-        elif self.payment_method == 'gold' and self.sale_id.po_id:
+        elif self.payment_method == 'gold' and self.sale_id.po_id and self.check_true:
             self.edit_po(purchase_order=self.sale_id.po_id)
         sale_order.payment_method = self.payment_method
         sale_order.with_context({'no_check':True}).action_confirm()
@@ -79,7 +95,7 @@ class PoInfoWizard(models.TransientModel):
             'partner_id': self.sale_id.partner_id.id,
             'date_order': self.sale_id.commitment_date or fields.Date.today(),
             'origin': self.sale_id.name,
-            'currecny_id':self.currecny_id.id,
+            'currency_id':self.currency_id.id,
             # 'from_sale': self.sale_id.name,
             'order_line': [(0, 0, {
                 'product_id': self.product_id.id,
