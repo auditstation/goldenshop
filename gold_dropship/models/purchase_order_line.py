@@ -29,12 +29,12 @@ class PurchaseOrderLineInherit(models.Model):
             line.price_total = base_line['tax_details']['raw_total_included_currency']
             line.price_tax = line.price_total - line.price_subtotal
 
-    def _prepare_account_move_line(self, move=False):
-        res = super(PurchaseOrderLineInherit, self)._prepare_account_move_line()
-        res.update({"purity": self.purity})
-        return res
+    # def _prepare_account_move_line(self, move=False):
+    #     res = super(PurchaseOrderLineInherit, self)._prepare_account_move_line()
+    #     res.update({"purity": self.purity})
+    #     return res
 
-    @api.depends('product_qty', 'product_uom', 'company_id', 'order_id.partner_id')
+    @api.depends('product_qty', 'product_uom', 'company_id', 'order_id.partner_id','order_id.currency_id')
     def _compute_price_unit_and_date_planned_and_name(self):
         super()._compute_price_unit_and_date_planned_and_name()
 
@@ -47,15 +47,20 @@ class PurchaseOrderLineInherit(models.Model):
                            "Catch-Control": "no-cache", }
                 create_request_get_data = requests.get(url, data=json.dumps({}), headers=headers)
                 response_body_data = json.loads(create_request_get_data.content)['result']
-                line.price_unit = response_body_data
+                converted_price = self.env.company.currency_id._convert(
+                    response_body_data,
+                    line.currency_id,
+                    line.company_id,
+                    fields.Date.today(),)
+                line.price_unit = converted_price
 
     
-    def write(self,vals):
-        if 'purity' in vals and vals['purity']:
-            for i in self.invoice_lines:
-                i.with_context({'no_need_edit':True}).write({'purity':vals['purity']})
+    # def write(self,vals):
+    #     if 'purity' in vals and vals['purity']:
+    #         for i in self.invoice_lines:
+    #             i.with_context({'no_need_edit':True}).write({'purity':vals['purity']})
                 
-        return super().write(vals)
+    #     return super().write(vals)
 
 
     

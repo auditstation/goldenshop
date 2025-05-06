@@ -8,7 +8,7 @@
             <xpath expr="//div[@name='button_box']/button[@name='action_view_invoice']" position="before">
                 <button class="oe_stat_button" name="action_view_purchase_orders_related" type="object"
                         icon="fa-credit-card"
-                        invisible="payment_method != 'gold' and not po_id">
+                        invisible="payment_method != 'gold' or not po_id">
                     <div class="o_field_widget o_stat_info">
                         <span class="o_stat_text">Purchase</span>
                     </div>

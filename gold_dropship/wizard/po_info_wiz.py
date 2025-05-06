@@ -15,7 +15,7 @@ class PoInfoWizard(models.TransientModel):
         ('gold', 'Cash & Gold'),
     ], required=True, default='cash')
     product_id = fields.Many2one('product.product', string='Product',
-                                 domain=[('purchase_ok', '=', True), ('is_gold', '=', True)])
+                                 domain=[('purchase_ok', '=', True), ('broken_gold', '=', True)])
     unit_price = fields.Float(related="product_id.standard_price", string="Unit Price", readonly=False)
     unit_price_update = fields.Float(string="Unit Price Updated",compute='_compute_unit_price_update', readonly=False)
     product_uom_id = fields.Many2one('uom.uom', "Unit of Measure", related="product_id.uom_id", readonly=False)
@@ -23,8 +23,11 @@ class PoInfoWizard(models.TransientModel):
     supplier_taxes_id = fields.Many2many('account.tax', string="Purchase Taxes",
                                          readonly=False)
     sale_id = fields.Many2one('sale.order', readonly=True)
+    currency_id = fields.Many2one('res.currency', readonly=False,default=lambda self:self.env.company.currency_id)
+    company_id = fields.Many2one('res.company', readonly=True,
+                                 default=lambda self:self.env.company,ondelete='cascade')
     
-    @api.depends('payment_method')
+    @api.depends('payment_method','currency_id')
     def _compute_unit_price_update(self):
         for rec in self:
             unit_price_update = 0
@@ -35,7 +38,12 @@ class PoInfoWizard(models.TransientModel):
                        "Catch-Control": "no-cache", }
             create_request_get_data = requests.get(url, data=json.dumps({}), headers=headers)
             unit_price_update = json.loads(create_request_get_data.content)['result']
-            rec.unit_price_update = unit_price_update
+            converted_price = self.env.company.currency_id._convert(
+                    unit_price_update,
+                    rec.currency_id,
+                    rec.company_id,
+                    fields.Date.today(),)
+            rec.unit_price_update = converted_price
     
 
     @api.onchange('product_id')
@@ -71,12 +79,14 @@ class PoInfoWizard(models.TransientModel):
             'partner_id': self.sale_id.partner_id.id,
             'date_order': self.sale_id.commitment_date or fields.Date.today(),
             'origin': self.sale_id.name,
+            'currecny_id':self.currecny_id.id,
             # 'from_sale': self.sale_id.name,
             'order_line': [(0, 0, {
                 'product_id': self.product_id.id,
                 'product_qty': self.qty,
                 'product_uom': self.product_uom_id.id,
                 'price_unit': self.unit_price_update,
+                'sale_order_id':self.sale_id.id,
                 'taxes_id': [(6, 0, self.supplier_taxes_id.ids)]
             })],
         }

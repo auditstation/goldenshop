@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_qty']" position="after">
-                <field name="purity" optional="show" column_invisible="parent.state == 'draft'"/>
-                <field name="pure_gold" optional="show" column_invisible="parent.state == 'draft'"/>
+                <field name="purity" optional="show" readonly="1" column_invisible="parent.invoice_count == 0"/>
+                <field name="pure_gold" optional="show" readonly="1" column_invisible="parent.invoice_count == 0"/>
             </xpath>
             
 

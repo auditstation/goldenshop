@@ -13,10 +13,10 @@ class SaleOrderInherit(models.Model):
     payment_method = fields.Selection(string='Payment Method', selection=[
         ('cash', 'Cash'),
         ('gold', 'Cash & Gold'),
-    ], required=True, default='cash', readonly=True)
-    po_id = fields.Many2one('purchase.order', readonly=True)
+    ], required=True, default='cash', readonly=True,copy=False)
+    po_id = fields.Many2one('purchase.order', readonly=True,copy=False)
     def action_confirm(self):
-        if not self.env.context.get('no_check'):
+        if not self.env.context.get('no_check') and (any(self.order_line.mapped('product_id').mapped('is_gold')) or any(self.order_line.mapped('product_id').mapped('broken_gold'))):
             return self.open_po_info_wizard()
         return super(SaleOrderInherit, self).action_confirm()
 
@@ -42,7 +42,7 @@ class SaleOrderInherit(models.Model):
         }
 
     def find_gold_product(self):
-        return self.env['product.product'].search([('purchase_ok', '=', True), ('is_gold', '=', True)], limit=1)
+        return self.env['product.product'].search([('purchase_ok', '=', True), ('broken_gold', '=', True)], limit=1)
 
     def action_view_purchase_orders_related(self):
         return {

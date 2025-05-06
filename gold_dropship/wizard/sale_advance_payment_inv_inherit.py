@@ -24,7 +24,11 @@ class SaleAdvancePaymentInv(models.TransientModel):
             'product_uom_id': line.product_uom.id,
             'quantity': line.product_qty,
             'discount': line.discount,
-            'price_unit': line.price_unit * -1,
+            'price_unit': line.currency_id._convert(
+                    line.price_unit * -1,
+                    inv.currency_id,
+                    inv.company_id,
+                    fields.Date.today(),),
             'tax_ids': [(6, 0, line.taxes_id.ids)],
         }) for line in self.sale_order_ids.po_id.mapped('order_line')]
             

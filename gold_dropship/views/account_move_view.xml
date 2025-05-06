@@ -9,8 +9,8 @@
                 <field name="payment_method"/>
             </xpath>
             <xpath expr="//form/sheet/notebook/page[@name='invoice_tab']/field[@name='invoice_line_ids']/list/field[@name='quantity']" position="after">
-                <field optional="show" name="purity" column_invisible="parent.move_type not in ['in_invoice','in_refund'] or parent.state != 'posted'" invisible="move_type not in ['in_invoice','in_refund']"/>
-                <field optional="show" name="pure_gold" column_invisible="parent.move_type not in ['in_invoice','in_refund'] or parent.state != 'posted'"  invisible="move_type not in ['in_invoice','in_refund']"/>
+                <field optional="show" name="purity" column_invisible="parent.move_type not in ['in_invoice','in_refund']" invisible="move_type not in ['in_invoice','in_refund']"/>
+                <field optional="show" name="pure_gold" column_invisible="parent.move_type not in ['in_invoice','in_refund']"  invisible="move_type not in ['in_invoice','in_refund']"/>
             </xpath>
 
         </field>
