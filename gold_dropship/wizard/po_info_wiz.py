@@ -15,7 +15,7 @@ class PoInfoWizard(models.TransientModel):
         ('gold', 'Cash & Gold'),
     ], required=True, default='cash')
     product_id = fields.Many2one('product.product', string='Product',
-                                 domain=[('purchase_ok', '=', True), ('broken_gold', '=', True)])
+                                 domain=[('purchase_ok', '=', True), ('broken_gold', '=', True)],required=True)
     unit_price = fields.Float(related="product_id.standard_price", string="Unit Price", readonly=False)
     unit_price_update = fields.Float(string="Unit Price Updated",compute='_compute_unit_price_update', readonly=False)
     product_uom_id = fields.Many2one('uom.uom', "Unit of Measure", related="product_id.uom_id", readonly=False)
@@ -39,6 +39,7 @@ class PoInfoWizard(models.TransientModel):
             'type': 'ir.actions.act_window',
             'res_model': self._name,
             'res_id': self.id,
+            'context':self.env.context,
             'view_mode': 'form',
             'target': 'new'}
         
@@ -54,11 +55,13 @@ class PoInfoWizard(models.TransientModel):
                        "Catch-Control": "no-cache", }
             create_request_get_data = requests.get(url, data=json.dumps({}), headers=headers)
             unit_price_update = json.loads(create_request_get_data.content)['result']
-            converted_price = self.env.company.currency_id._convert(
+            usd_currency = self.env.ref('base.USD')
+            unit_price_iq= usd_currency._convert(
                     unit_price_update,
                     rec.currency_id,
                     rec.company_id,
                     fields.Date.today(),)
+            converted_price = unit_price_iq
             rec.unit_price_update = converted_price
     
 

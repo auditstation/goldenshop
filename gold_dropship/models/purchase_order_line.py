@@ -47,12 +47,16 @@ class PurchaseOrderLineInherit(models.Model):
                            "Catch-Control": "no-cache", }
                 create_request_get_data = requests.get(url, data=json.dumps({}), headers=headers)
                 response_body_data = json.loads(create_request_get_data.content)['result']
-                converted_price = self.env.company.currency_id._convert(
-                    response_body_data,
-                    line.currency_id,
-                    line.company_id,
-                    fields.Date.today(),)
+                usd_currency = self.env.ref('base.USD')
+                unit_price_iq= usd_currency._convert(
+                        response_body_data,
+                        line.currency_id,
+                        line.company_id,
+                        fields.Date.today(),)
+                converted_price = unit_price_iq
+               
                 line.price_unit = converted_price
+
 
     
     # def write(self,vals):
@@ -62,6 +66,4 @@ class PurchaseOrderLineInherit(models.Model):
                 
     #     return super().write(vals)
 
-
-    
-
+   

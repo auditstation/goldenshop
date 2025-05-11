@@ -11,7 +11,8 @@ class SaleAdvancePaymentInv(models.TransientModel):
     _inherit = 'sale.advance.payment.inv'
     def _create_invoices(self, sale_orders):
         inv = super()._create_invoices(self.sale_order_ids)
-        self.update_inv(inv)
+        if self.advance_payment_method == 'delivered':
+            self.update_inv(inv)
         return inv
 
     def update_inv(self, inv):

@@ -6,6 +6,7 @@
         <field name="arch" type="xml">
             <form string="Purchase Information">
                 <group>
+                    <field name="calculation_gold_price"/>
                     <field name="price_per_gram"/>
                     <field name="location_ids" widget="many2many_tags"/>
                 </group>
