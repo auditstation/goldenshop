@@ -7,6 +7,7 @@ from . import account_move_inherit
 from . import account_move_line_edit
 from . import stock_picking_edit
 from . import account_payment_register
+from . import mrp
 
 
 

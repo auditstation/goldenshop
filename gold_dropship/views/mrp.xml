@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_workorder_operation_form_view_inherit" model="ir.ui.view">
+            <field name="name">mrp_workorder.mrp_workorder.operation.form.view</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="inherit_id" ref="mrp.mrp_routing_workcenter_form_view"/>
+            <field name="priority" eval="12"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='workorder']" position="replace">
+                    <group name="workorder">
+                                    <field name="workorder_count" invisible="1"/>
+                                    <field name="time_mode" widget="radio"/>
+                                    
+                                    <label for="time_cycle_manual" invisible="time_mode == 'auto' and workorder_count != 0" string="Default Duration"/>
+                                    <div invisible="time_mode == 'auto' and workorder_count != 0">
+                                        <field name="time_cycle_manual" widget="float_time" class="oe_inline"/> minutes
+                                    </div>
+                                    <field name="time_cycle" invisible="1"/>
+                                    <field name="company_id" groups="base.group_multi_company" />
+                        </group>
+                </xpath>
+            </field>
+    </record>
+</odoo>
+

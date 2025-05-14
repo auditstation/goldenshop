@@ -15,6 +15,7 @@ class StockGoldWizard(models.TransientModel):
     calculation_gold_price = fields.Selection([('initial', 'Initial Market Price'),
                               ('avg', 'Average Cost'),
                               ], default='avg',required=True)
+    company_id = fields.Many2one('res.company', default=lambda self: self.env.company)
 
     def open_view_report(self):
         datas = {

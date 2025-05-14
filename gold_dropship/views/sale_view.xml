@@ -15,7 +15,7 @@
                 </button>
             </xpath>
             <xpath expr="//field[@name='payment_term_id']" position="after">
-                <field name="payment_method"/>
+                <field name="payment_method" invisible="state == 'draft'"/>
                 <field name="po_id" invisible="True"/>
             </xpath>
 
