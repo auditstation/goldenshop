@@ -44,6 +44,14 @@ class SaleOrderInherit(models.Model):
     def find_gold_product(self):
         return self.env['product.product'].search([('purchase_ok', '=', True), ('broken_gold', '=', True)], limit=1)
 
+    def action_view_delivery(self):
+        return self._get_action_view_picking(self.picking_ids.filtered(lambda l:l.sale_id and not l.purchase_id))
+
+    @api.depends('picking_ids')
+    def _compute_picking_ids(self):
+        for order in self:
+            order.delivery_count = len(order.picking_ids.filtered(lambda l:l.sale_id and not l.purchase_id))
+
     def action_view_purchase_orders_related(self):
         return {
             'type': 'ir.actions.act_window',

@@ -37,7 +37,7 @@ class AccountMoveLineInherit(models.Model):
             if line.product_id:
                 ratio = line.product_uom_id.ratio if line.product_uom_id.ratio != 0 else 1
                 amount = round(line.quantity / ratio * 1000,2)
-                if line.account_id.account_type == 'income':
+                if line.account_id.account_type in ['income','expense_direct_cost']:
                     all_amount += round(line.quantity / ratio * 1000,2)
             line.debit_gold = amount if line.credit == 0 else 0
             line.credit_gold = amount if line.debit == 0 else 0

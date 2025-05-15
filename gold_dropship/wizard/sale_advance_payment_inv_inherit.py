@@ -17,19 +17,20 @@ class SaleAdvancePaymentInv(models.TransientModel):
 
     def update_inv(self, inv):
         inv.payment_method = self.sale_order_ids.payment_method
-        inv.invoice_line_ids= [(0,0, 
-            {'display_type':'line_section','name':'Gold Sold',},)]
-        inv.invoice_line_ids= [(0,0, 
-        {
-            'product_id': line.product_id.id,
-            'product_uom_id': line.product_uom.id,
-            'quantity': line.product_qty,
-            'discount': line.discount,
-            'price_unit': line.currency_id._convert(
-                    line.price_unit * -1,
-                    inv.currency_id,
-                    inv.company_id,
-                    fields.Date.today(),),
-            'tax_ids': [(6, 0, line.taxes_id.ids)],
-        }) for line in self.sale_order_ids.po_id.mapped('order_line')]
+        if self.sale_order_ids.payment_method == 'gold':
+            inv.invoice_line_ids= [(0,0, 
+                {'display_type':'line_section','name':'Gold Sold',},)]
+            inv.invoice_line_ids= [(0,0, 
+            {
+                'product_id': line.product_id.id,
+                'product_uom_id': line.product_uom.id,
+                'quantity': line.product_qty,
+                'discount': line.discount,
+                'price_unit': line.currency_id._convert(
+                        line.price_unit * -1,
+                        inv.currency_id,
+                        inv.company_id,
+                        fields.Date.today(),),
+                'tax_ids': [(6, 0, line.taxes_id.ids)],
+            }) for line in self.sale_order_ids.po_id.mapped('order_line')]
             

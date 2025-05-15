@@ -5,6 +5,7 @@ from odoo.exceptions import ValidationError
 import logging
 import requests
 import json
+import re
 _logger = logging.getLogger(__name__)
 
 
@@ -34,7 +35,7 @@ class PurchaseOrderLineInherit(models.Model):
     #     res.update({"purity": self.purity})
     #     return res
 
-    @api.depends('product_qty', 'product_uom', 'company_id', 'order_id.partner_id','order_id.currency_id')
+    @api.depends('product_qty', 'product_uom', 'company_id', 'order_id.partner_id','order_id.currency_id','product_id')
     def _compute_price_unit_and_date_planned_and_name(self):
         super()._compute_price_unit_and_date_planned_and_name()
 
@@ -48,8 +49,17 @@ class PurchaseOrderLineInherit(models.Model):
                 create_request_get_data = requests.get(url, data=json.dumps({}), headers=headers)
                 response_body_data = json.loads(create_request_get_data.content)['result']
                 usd_currency = self.env.ref('base.USD')
+                if self.product_id.is_gold or self.product_id.broken_gold:
+                    if re.search(r'\d+', self.product_id.display_name):
+                        type_gold = int(re.search(r'\d+', self.product_id.display_name).group())
+                price_gold_type = response_body_data/31.1035 * type_gold / 24 if re.search(r'\d+', self.product_id.display_name) else response_body_data
+                if line.product_uom.factor_inv == 1:
+                    price_gold_type = price_gold_type * 1000
+                elif line.product_uom.factor_inv < 1 and self.env.ref('uom.product_uom_gram').id != line.product_uom.id:
+                    price_gold_type = (price_gold_type * line.product_uom.ratio) / 1000
+                    
                 unit_price_iq= usd_currency._convert(
-                        response_body_data,
+                        price_gold_type,
                         line.currency_id,
                         line.company_id,
                         fields.Date.today(),)

@@ -3,6 +3,7 @@ from odoo import api, fields, models, _
 import logging
 import requests
 import json
+import re
 _logger = logging.getLogger(__name__)
 
 
@@ -17,8 +18,11 @@ class PoInfoWizard(models.TransientModel):
     product_id = fields.Many2one('product.product', string='Product',
                                  domain=[('purchase_ok', '=', True), ('broken_gold', '=', True)],required=True)
     unit_price = fields.Float(related="product_id.standard_price", string="Unit Price", readonly=False)
-    unit_price_update = fields.Float(string="Unit Price Updated",compute='_compute_unit_price_update', readonly=False)
-    product_uom_id = fields.Many2one('uom.uom', "Unit of Measure", related="product_id.uom_id", readonly=False)
+    unit_price_update = fields.Float(string="Unit Price Updated", readonly=False,store=True)
+    product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]",store=True)
+    product_uom_category_id = fields.Many2one(related='product_id.uom_id.category_id')
+
+    # product_uom_id = fields.Many2one('uom.uom', "Unit of Measure", compute="_compute_unit_price_update", readonly=False,store=True)
     qty = fields.Float(string='Quantity')
     supplier_taxes_id = fields.Many2many('account.tax', string="Purchase Taxes",
                                          readonly=False)
@@ -44,7 +48,7 @@ class PoInfoWizard(models.TransientModel):
             'target': 'new'}
         
     
-    @api.depends('payment_method','currency_id')
+    @api.onchange('payment_method','currency_id','product_id','product_uom_id')
     def _compute_unit_price_update(self):
         for rec in self:
             unit_price_update = 0
@@ -56,20 +60,34 @@ class PoInfoWizard(models.TransientModel):
             create_request_get_data = requests.get(url, data=json.dumps({}), headers=headers)
             unit_price_update = json.loads(create_request_get_data.content)['result']
             usd_currency = self.env.ref('base.USD')
+            if rec.product_id.is_gold or rec.product_id.broken_gold:
+                if re.search(r'\d+', rec.product_id.display_name):
+                    type_gold = int(re.search(r'\d+', rec.product_id.display_name).group())
+                price_gold_type = unit_price_update / 31.1035 * type_gold / 24 if re.search(r'\d+', rec.product_id.display_name) else unit_price_update
+                if rec.product_uom_id.factor_inv == 1:
+                    price_gold_type = price_gold_type * 1000
+                elif rec.product_uom_id.factor_inv < 1 and self.env.ref('uom.product_uom_gram').id != rec.product_uom_id.id:
+                    price_gold_type = (price_gold_type * rec.product_uom_id.ratio) / 1000
             unit_price_iq= usd_currency._convert(
-                    unit_price_update,
+                    price_gold_type,
                     rec.currency_id,
                     rec.company_id,
                     fields.Date.today(),)
             converted_price = unit_price_iq
             rec.unit_price_update = converted_price
+           
     
 
+        
     @api.onchange('product_id')
     def _onchange_product_id(self):
         for rec in self:
             if rec.product_id:
                 rec.supplier_taxes_id = rec.product_id.with_company(self.env.company).supplier_taxes_id
+            if not rec.product_id:
+                return
+
+            rec.product_uom_id = rec.product_id.uom_id.id
     
     def confirm_button(self):
         sale_order = self.sale_id
@@ -79,17 +97,18 @@ class PoInfoWizard(models.TransientModel):
             self.edit_po(purchase_order=self.sale_id.po_id)
         sale_order.payment_method = self.payment_method
         sale_order.with_context({'no_check':True}).action_confirm()
-        return {'type': 'ir.actions.act_window_close'}
+        return True
+        # return {'type': 'ir.actions.act_window_close'}
 
     def create_po(self):
-        po = self.env['purchase.order'].create(self.get_data() or {})
+        po = self.env['purchase.order'].with_context({'from_wiz':True}).create(self.get_data() or {})
         po.button_confirm()
         self.sale_id.po_id = po.id
     
     def edit_po(self, purchase_order):
         purchase_order.button_draft()
         purchase_order.order_line = [(5, 0, 0)]
-        purchase_order.write(self.get_data() or {} )
+        purchase_order.with_context({'from_wiz':True}).write(self.get_data() or {} )
         purchase_order.button_confirm()
         # self.sale_id.po_id = purchase_order.id
 

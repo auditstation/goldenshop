@@ -22,11 +22,13 @@ class AccountMoveInherit(models.Model):
         res = super().create(vals_list)
         for i in res:
             order_id = i.line_ids.sale_line_ids.order_id
-            if order_id and order_id.po_id and i.move_type == 'out_invoice':
+            
+            all_received_billed = all(line.qty_received == line.qty_invoiced and line.qty_received != 0 for line in order_id.po_id.order_line)
+            if order_id and order_id.po_id and i.move_type == 'out_invoice' and not all_received_billed:
                 self.create_bill(order_id, i)
-            if i.reversed_entry_id and i.reversed_entry_id.line_ids.sale_line_ids.order_id.payment_method == 'gold' and i.move_type == 'out_refund':
+            if i.reversed_entry_id and i.reversed_entry_id.line_ids.sale_line_ids.order_id.payment_method in ['gold','cash'] and i.move_type == 'out_refund':
                 for j in i.invoice_line_ids:
-                    if j.display_type == 'line_section' and j.name == 'Gold Sold':
+                    if j.display_type == 'line_section' and (j.name == 'Gold Sold' or j.name == 'Down Payments'):
                         j.unlink()
         return res
 
@@ -55,6 +57,16 @@ class AccountMoveInherit(models.Model):
             if bill.state == 'posted':
                 bill.sudo().button_draft()
         return res
+    
+    def button_cancel(self):
+        res = super().button_cancel()
+        bill = self.sudo().search([('related_invoice', '=', self.id),('company_id','=',self.company_id.id)])
+        po_id = self.line_ids.sale_line_ids.order_id.po_id
+        if bill and po_id and self.move_type == 'out_invoice':
+            if bill.state == 'draft':
+                bill.sudo().button_cancel()
+        return res
+
 
     def _reverse_moves(self, default_values_list=None, cancel=False):
         if not default_values_list:
@@ -75,9 +87,9 @@ class AccountMoveInherit(models.Model):
                 include_business_fields=True,
                 skip_invoice_sync=move.move_type == 'entry',
             ).copy(default_values)
-        if reverse_moves.reversed_entry_id.line_ids.sale_line_ids.order_id.payment_method == 'gold':
+        if reverse_moves.reversed_entry_id.line_ids.sale_line_ids.order_id.payment_method in ['gold','cash']:
             for i in reverse_moves.invoice_line_ids:
-                if i.product_id.broken_gold:
+                if i.product_id.broken_gold or i.is_downpayment:
                     i.unlink()
         reverse_moves.with_context(skip_invoice_sync=cancel).write({'line_ids': [
             Command.update(line.id, {
