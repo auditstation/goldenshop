@@ -13,9 +13,9 @@
                 <table class="table table-sm table-bordered" style="width: 100%;">
                     <thead>
                         <tr style="background-color: #f0f0f0;">
-                            <th>Product</th>
-                            <th>Quantity (g)</th>
-                            <th>Valuation</th>
+                            <th class="text-center" style="font-weight: bold;">Product</th>
+                            <th class="text-center" style="font-weight: bold;">Quantity (g)</th>
+                            <th class="text-center" style="font-weight: bold;">Valuation (<t t-esc="env.company.currency_id.name"/>)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -24,10 +24,10 @@
                         <tr class="text-center">
                             <td>Gold</td>
                             <td>
-                                <t t-esc="data.get('gold_qty')"/>
+                                <t t-esc="data.get('gold_qty')" t-options="{'widget': 'float', 'precision': 2}"/>
                             </td>
                             <td>
-                                <t t-esc="data.get('gold_valuation')"/>
+                                <t t-esc="data.get('gold_valuation')" t-options="{'widget': 'float', 'precision': 2}"/>
                             </td>
                         </tr>
 
@@ -35,10 +35,10 @@
                         <tr class="text-center">
                             <td>Broken Gold</td>
                             <td>
-                                <t t-esc="data.get('broken_gold_qty')"/>
+                                <t t-esc="data.get('broken_gold_qty')" t-options="{'widget': 'float', 'precision': 2}"/>
                             </td>
                             <td>
-                                <t t-esc="data.get('broken_gold_valuation')"/>
+                                <t t-esc="data.get('broken_gold_valuation')" t-options="{'widget': 'float', 'precision': 2}"/>
                             </td>
                         </tr>
 

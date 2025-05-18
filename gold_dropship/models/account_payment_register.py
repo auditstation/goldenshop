@@ -11,7 +11,7 @@ class AccountRegisterInherit(models.TransientModel):
         original_move = self.env['account.move'].search([('line_ids', 'in', self.line_ids.ids)]).filtered(lambda l: l.company_id.id == self.company_id.id)
         bill_move = self.env['account.move'].sudo().search([('related_invoice', '=', original_move.id),('company_id','=',self.company_id.id)])
         amount_paid = bill_move.amount_residual if self.amount >= bill_move.amount_residual else self.amount
-        if bill_move:
+        if bill_move and bill_move.payment_state != 'paid':
             vals = self.env['account.payment.register'].with_context(active_model='account.move',
                                                                      active_ids=bill_move.ids).sudo().create({
                 'amount': amount_paid,
