@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_vendor_product_search" model="ir.ui.view">
+        <field name="name">custom.order.line.search</field>
+        <field name="model">purchase.gold</field>
+        <field name="arch" type="xml">
+            <search string="Search Pure gold">
+                <!-- Default filter -->
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <field name="date"/>
+                <field name="name"/>
+                <filter string="Available" name="filter_avaliable" domain="[('state','=', 'available')]"/>
+                <filter string="Not Available" name="filter_not_avaliable" domain="[('state','=', 'not')]"/>
+                <separator/>
+                <!-- Custom filter -->
+                <filter string="Today" name="filter_today" domain="[('date', '=', context_today())]"/>
+                <filter string="This Month" name="filter_this_month" domain="[
+                        ('date', '&gt;=', (datetime.datetime.combine(context_today() + relativedelta(day=1), datetime.time(0,0,0)).to_utc())),
+                        ('date', '&lt;=', (datetime.datetime.combine(context_today() + relativedelta(months=1, day=1), datetime.time(0,0,0)).to_utc())),
+                    ]"/>
+                <!-- Group by options -->
+                <group expand="0" string="Group By">
+                    <filter string="Product" name="group_by_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="UOM" name="group_by_uom" context="{'group_by': 'product_uom'}"/>
+                    <filter string="Currency" name="group_by_currncy" context="{'group_by': 'currency_id'}"/>
+                    <filter string="Vendor" name="group_by_vendor" context="{'group_by': 'partner_id'}"/>
+                    <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_custom_order_line_tree" model="ir.ui.view">
+        <field name="name">Pure gold stock</field>
+        <field name="model">purchase.gold</field>
+        <field name="arch" type="xml">
+            <list string="Pure gold stock">
+                <field name="name"/>
+                <field name="currency_id_iqd" column_invisible="True"/>
+                <field name="currency_id_usd" column_invisible="True"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="qty_gram" string="Available Quantity" sum="Total Quantity(g)"/>
+                <field name="tranfer_qty" sum="Transfer Quantity(g)"/>
+                <field name="all_qty_g" string="Original Quantity" sum="All Quantity(g)"/>
+                <field name="quantity" string="Available Quantity in measure" optional="hide"/>
+                <field name="all_qty" string="Original Quantity" optional="hide"/>
+                <field name="product_uom" optional="hide"/>
+                <field name="currency_id" optional="hide"/>
+                <field name="price_unit" sum="Total price unit" optional="hide"/>
+                <field name="price_unit_iqd" avg="Avg price unit iqd"/>
+                <field name="price_unit_usd" avg="Avg price unit usd" optional="hide"/>
+                <field name="total_amount_excl" sum="Total Amount without tax" optional="hide"/>
+                <field name="total_amount_excl_iqd" sum="Total Amount without tax iqd"/>
+                <field name="total_amount_excl_usd" sum="Total Amount without tax usd" optional="hide"/>
+                <field name="total_amount_incl" sum="Total Amount" optional="hide"/>
+                <field name="total_amount_incl_iqd" sum="Total Amount iqd"/>
+                <field name="total_amount_incl_usd" sum="Total Amount usd" optional="hide"/>
+                <field name="all_quantity_purchase" sum="Total quantity purchase" string="Quantity Purchased"/>
+                <field name="all_price_unit_iqd"  avg="Avg price purchase" string="Price Unit Purchased IQD)"/>
+                <field name="all_price_unit_usd"  avg="Avg price purchase USD" string="Price Unit Purchased USD" optional="hide"/>
+                <field name="all_price_subtotal_iqd"  sum="Total subtotal Purchased IQD" string="Price subtotal IQD"/>
+                <field name="all_price_subtotal_usd"  sum="Total subtotal Purchased USD" string="Price subtotal Purchased USD" optional="hide"/>
+                <field name="all_price_total_iqd"  sum="Total purchased" string="Total Price Purchased IQD"/>
+                <field name="all_price_total_usd"  sum="Total purchased USD" string="Total Price Purchased USD" optional="hide"/>
+                <field name="difference_total"  sum="Difference" string="Difference"/>
+                <field name="difference_total_usd"  sum="Difference USD" string="Difference USD" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_custom_order_line_move_tree" model="ir.ui.view">
+        <field name="name">Pure gold stock</field>
+        <field name="model">purchase.gold</field>
+        <field name="arch" type="xml">
+            <list string="Pure gold stock">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="all_qty" string="Quantity" sum="Total Quantity(g)"/>
+                <field name="product_uom"/>
+                <field name="tranfer_qty" sum="Total Quantity(g)"/>
+                <field name="qty_gram" string="Remaining Quantity(g)" sum="Total Quantity(g)"/>
+                <field name="currency_id" optional="hide"/>
+                <field name="price_unit" sum="Total price unit" optional="hide"/>
+                <field name="price_unit_iqd" sum="Total price unit iqd"/>
+                <field name="price_unit_usd" sum="Total price unit usd"/>
+                <field name="total_amount_excl" sum="Total Amount without tax" optional="hide"/>
+                <field name="total_amount_excl_iqd" sum="Total Amount without tax iqd"/>
+                <field name="total_amount_excl_usd" sum="Total Amount without tax usd"/>
+                <field name="total_amount_incl" sum="Total Amount" optional="hide"/>
+                <field name="total_amount_incl_iqd" sum="Total Amount iqd"/>
+                <field name="total_amount_incl_usd" sum="Total Amount usd"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_custom_order_line_form" model="ir.ui.view">
+        <field name="name">Pure gold stock</field>
+        <field name="model">purchase.gold</field>
+        <field name="arch" type="xml">
+            <form string="Pure gold stock">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="available,not"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="partner_id"/>
+                            <field name="product_id"/>
+                            <label for="quantity" readonly="po_line" string="Quantity"/>
+                            <div class="o_row g-0 d-flex">
+                                <field name="quantity" class="oe_inline text-start text-truncate" readonly="po_line"/>
+                                <label for="product_uom" readonly="po_line" string="" class="oe_inline"/>
+                                <field name="product_uom" readonly="po_line"/>
+                            </div>
+                            <div field="is_appear_gram" invisible="1"/>
+                            <label for="qty_gram" string="Quantity(g)" invisible="not is_appear_gram"/>
+                            <div class="o_row g-0 d-flex" invisible="not is_appear_gram">
+                                <field name="qty_gram" class="oe_inline text-start text-truncate"/>
+                                <div class="oe_inline">g</div>
+                            </div>
+                            <label for="tranfer_qty" string="Transfer Qty"/>
+                            <div class="o_row g-0 d-flex">
+                                <field name="tranfer_qty" class="oe_inline text-start text-truncate"/>
+                                <div class="oe_inline">g</div>
+                            </div>
+                            <label for="all_qty_g" readonly="1" string="Original Qty"/>
+                            <div class="o_row g-0 d-flex">
+                                <field name="all_qty_g" class="oe_inline text-start text-truncate"/>
+                                <div class="oe_inline">g</div>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="currency_id_iqd" invisible="1"/>
+                            <field name="currency_id_usd" invisible="1"/>
+                            <field name="currency_id"/>
+                            <field name="price_unit"/>
+                            <field name="taxes_id" widget="many2many_tags"/>
+                            <field name="total_amount_excl"/>
+                            <field name="total_amount_incl"/>
+                            <field name="is_appear" invisible="True"/>
+                            <field name="price_unit_iqd" string="Unit prcie in IQD" invisible="not is_appear"/>
+                            <field name="price_unit_usd" string="Unit prcie in USD" invisible="not is_appear"/>
+                            <field name="total_amount_excl_iqd" string="Amount without tax in IQD"
+                                   invisible="not is_appear"/>
+                            <field name="total_amount_excl_usd" string="Amount without tax in USD"
+                                   invisible="not is_appear"/>
+                            <field name="total_amount_incl_iqd" string="Total in IQD" invisible="not is_appear"/>
+                            <field name="total_amount_incl_usd" string="Total in USD" invisible="not is_appear"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Details Tab" invisible="1">
+                            <field name="po_line" readonly="1">
+                                <list>
+                                    <field name="currency_id_iqd" column_invisible="1"/>
+                                    <field name="currency_id_usd" column_invisible="1"/>
+                                    <field name="order_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="product_id" string="Transformed Product"/>
+                                    <field name="quantity_purchase" string="Quantity purchased" sum="Total Quantity"/>
+                                    <field name="product_qty" optional="hide"/>
+                                    <field name="product_uom" optional="hide"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="price_unit" optional="hide"/>
+                                    <field name="price_subtotal" optional="hide"/>
+                                    <field name="price_total" optional="hide"/>
+                                    <field name="price_unit_iqd" string="Unit price PO" avg="Total price_unit_iqd"/>
+                                    <field name="price_unit_usd" string="Unit price PO USD" avg="Total price_unit_usd"/>
+                                    <field name="price_subtotal_iqd" string="PO Amount EXcl VAT"
+                                           sum="Total price subtotal iqd"/>
+                                    <field name="price_subtotal_usd" string="PO Amount EXcl VAT USD"
+                                           sum="Total price subtotal usd"/>
+                                    <field name="price_total_iqd" string="PO Amount Incl VAT"
+                                           sum="Total price total iqd"/>
+                                    <field name="price_total_usd" string="PO Amount Incl VAT USD"
+                                           sum="Total price total usd"/>
+                                    <field name="requested_qty" string="Transformed Quantity"
+                                           sum="Total Transformed Quantity"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Details Tab">
+                            <field name="po_gold_line" readonly="1">
+                                <list>
+                                    <field name="currency_id_iqd" column_invisible="1"/>
+                                    <field name="currency_id_usd" column_invisible="1"/>
+                                    <field name="order_id"/>
+                                    <field name="partner_id"/>
+                                    <field name="product_id" string="Transformed Product"/>
+                                    <field name="quantity_purchase" string="Quantity purchased" sum="Total Quantity"/>
+
+                                    <field name="price_unit_iqd" string="Unit price PO" avg="Total price_unit_iqd"/>
+                                    <field name="price_unit_usd" string="Unit price PO USD" avg="Total price_unit_usd"/>
+                                    <field name="price_subtotal_iqd" string="PO Amount EXcl VAT"
+                                           sum="Total price subtotal iqd"/>
+                                    <field name="price_subtotal_usd" string="PO Amount EXcl VAT USD"
+                                           sum="Total price subtotal usd"/>
+                                    <field name="price_total_iqd" string="PO Amount Incl VAT"
+                                           sum="Total price total iqd"/>
+                                    <field name="price_total_usd" string="PO Amount Incl VAT USD"
+                                           sum="Total price total usd"/>
+                                    <field name="qty" string="Transformed Quantity"
+                                           sum="Total Transformed Quantity"/>
+                                   
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_gold_record_pivot" model="ir.ui.view">
+        <field name="name">gold.record.pivot</field>
+        <field name="model">purchase.gold</field>
+        <field name="arch" type="xml">
+            <pivot string="purchase.gold">
+                <!-- Measures -->
+                <field name="qty_gram" type="measure" string="Avaliable Quantity"/>
+                <field name="tranfer_qty" type="measure" string="Delivered Quantity"/>
+                <field name="all_qty_g" type="measure" string="Original Quantity"/>
+                <field name="quantity" type="measure" invisible="1"/>
+                <field name="all_qty" type="measure" invisible="1"/>
+                <field name="price_unit" type="measure" invisible="1"/>
+                <field name="price_unit_iqd" type="measure"/>
+                <field name="price_unit_usd" type="measure"/>
+                <field name="total_amount_excl" type="measure" invisible="1"/>
+                <field name="total_amount_excl_iqd" type="measure"/>
+                <field name="total_amount_excl_usd" type="measure"/>
+                <field name="total_amount_incl" type="measure" invisible="1"/>
+                <field name="total_amount_incl_iqd" type="measure"/>
+                <field name="total_amount_incl_usd" type="measure"/>
+                <field name="all_quantity_purchase" type="measure" string="Quantity Purchased"/>
+                <field name="all_price_unit_iqd" type="measure" string="Price Unit Purchased IQD"/>
+                <field name="all_price_unit_usd" type="measure" string="Price Unit Purchased USD"/>
+                <field name="all_price_subtotal_iqd" type="measure" string="Price subtotal Purchased IQD"/>
+                <field name="all_price_subtotal_usd" type="measure" string="Price subtotal Purchased USD"/>
+                <field name="all_price_total_iqd" type="measure" string="Total Price Purchased IQD"/>
+                <field name="all_price_total_usd" type="measure" string="Total Price Purchased USD"/>
+                <field name="difference_total" type="measure" string="Total difference IQD"/>
+                <field name="difference_total_usd" type="measure" string="Total difference USD"/>
+                
+                <!-- Add more numeric fields here as needed -->
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_custom_order_line" model="ir.actions.act_window">
+        <field name="name">Pure gold stock</field>
+        <field name="res_model">purchase.gold</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="view_id" ref="view_custom_order_line_tree"/>
+        <field name="context">{'search_default_filter_avaliable': 1,'default_view_mode': 'list'}</field>
+    </record>
+
+    <menuitem id="menu_custom_order_root" web_icon="gold_dropship,static/description/gold.png" name="Gold"
+              sequence="10"/>
+
+    <menuitem id="menu_custom_order_line"
+              name="Pure gold stock"
+              parent="menu_custom_order_root"
+              action="action_custom_order_line"
+              sequence="20"/>
+
+</odoo>

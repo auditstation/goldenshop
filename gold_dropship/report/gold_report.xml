@@ -3,19 +3,89 @@
     <data>
         <template id="report_gold_dashboard_template">
             <t t-call="web.html_container">
+            <!-- <t t-call="web.external_layout"> -->
+            <!-- Header -->
+            <div class="text-center">
+                <h2 style="margin: 0 0 20px 0;">Gold Dashboard</h2>
+            </div>
             <t t-call="web.external_layout">
                 <!-- Header -->
                 <div class="text-center">
                     <h2 style="margin: 0 0 20px 0;">Gold Dashboard</h2>
                 </div>
-
                 <!-- Table -->
+                <t t-set="calculation_gold_price" t-value="data.get('calculation_gold_price')"/>
+                <div class="row mt-5 mb-5">
+                    <div class="col-8"/>
+                    <div class="col-4">
+                        <table class="table table-sm table-bordered" style="width: 100%;">
+
+                            <!-- Table -->
+                            <tr style="background-color: #f0f0f0;">
+                                <td class="text-center">
+                                    Karat per gram
+                                </td>
+                                <td class="text-center">
+                                    Price Unit (<t
+                                        t-esc="env.company.currency_id.name"/>)
+                                </td>
+                                <td class="text-center">
+                                    Price Unit (USD)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    18 karat 
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="data.get('18_karat')"
+                                       t-options="{'widget': 'float', 'precision': 4}"/>
+                                </td>
+                                 <td class="text-center">
+                                    <t t-esc="data.get('18_karat_usd')"
+                                       t-options="{'widget': 'float', 'precision': 4}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    21 karat
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="data.get('21_karat')"
+                                       t-options="{'widget': 'float', 'precision': 4}"/>
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="data.get('21_karat_usd')"
+                                       t-options="{'widget': 'float', 'precision': 4}"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">
+                                    24 karat 
+                                </td>
+                                <td class="text-center">
+                                    <t t-esc="data.get('24_karat')"
+                                       t-options="{'widget': 'float', 'precision': 4}"/>
+                                </td>
+                                  <td class="text-center">
+                                    <t t-esc="data.get('24_karat_usd')"
+                                       t-options="{'widget': 'float', 'precision': 4}"/>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
                 <table class="table table-sm table-bordered" style="width: 100%;">
                     <thead>
                         <tr style="background-color: #f0f0f0;">
                             <th class="text-center" style="font-weight: bold;">Product</th>
                             <th class="text-center" style="font-weight: bold;">Quantity (g)</th>
-                            <th class="text-center" style="font-weight: bold;">Valuation (<t t-esc="env.company.currency_id.name"/>)</th>
+                            <th class="text-center" style="font-weight: bold;">Valuation (<t
+                                    t-esc="env.company.currency_id.name"/>)
+                            </th>
+                            <th class="text-center" style="font-weight: bold;">Valuation (USD)
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,6 +99,10 @@
                             <td>
                                 <t t-esc="data.get('gold_valuation')" t-options="{'widget': 'float', 'precision': 2}"/>
                             </td>
+                              <td>
+                                <t t-esc="data.get('gold_valuation_usd')" t-options="{'widget': 'float', 'precision': 2}"/>
+                            </td>
+                            
                         </tr>
 
                         <!-- Broken Gold Line -->
@@ -38,10 +112,28 @@
                                 <t t-esc="data.get('broken_gold_qty')" t-options="{'widget': 'float', 'precision': 2}"/>
                             </td>
                             <td>
-                                <t t-esc="data.get('broken_gold_valuation')" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <t t-esc="data.get('broken_gold_valuation')"
+                                   t-options="{'widget': 'float', 'precision': 2}"/>
+                            </td>
+                              <td>
+                                <t t-esc="data.get('broken_gold_valuation_usd')"
+                                   t-options="{'widget': 'float', 'precision': 2}"/>
                             </td>
                         </tr>
-
+                        <tr class="text-center">
+                            <td>Pure Gold</td>
+                            <td>
+                                <t t-esc="data.get('gold_pure')" t-options="{'widget': 'float', 'precision': 2}"/>
+                            </td>
+                            <td>
+                                <t t-esc="data.get('gold_pure_valuation')"
+                                   t-options="{'widget': 'float', 'precision': 2}"/>
+                            </td>
+                              <td>
+                                <t t-esc="data.get('gold_pure_valuation_usd')"
+                                   t-options="{'widget': 'float', 'precision': 2}"/>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </t>
@@ -57,8 +149,7 @@
             <!-- <field name="print_report_name">(object._get_report_base_filename())</field> -->
             <field name="binding_model_id" ref="gold_dropship.model_stock_gold"/>
             <field name="binding_type">report</field>
-           
-        </record>
 
+        </record>
     </data>
 </odoo>

@@ -66,3 +66,5 @@ class SaleOrderInherit(models.Model):
                 'active_model': 'sale.order',
             }
         }
+
+    

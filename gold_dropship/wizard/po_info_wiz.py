@@ -16,7 +16,7 @@ class PoInfoWizard(models.TransientModel):
         ('gold', 'Cash & Gold'),
     ], required=True, default='cash')
     product_id = fields.Many2one('product.product', string='Product',
-                                 domain=[('purchase_ok', '=', True), ('broken_gold', '=', True)],required=True)
+                                 domain=[('purchase_ok', '=', True), ('broken_gold', '=', True)])
     unit_price = fields.Float(related="product_id.standard_price", string="Unit Price", readonly=False)
     unit_price_update = fields.Float(string="Unit Price Updated", readonly=False,store=True)
     product_uom_id = fields.Many2one('uom.uom', string='Unit of Measure', domain="[('category_id', '=', product_uom_category_id)]",store=True)
@@ -51,6 +51,7 @@ class PoInfoWizard(models.TransientModel):
     @api.onchange('payment_method','currency_id','product_id','product_uom_id')
     def _compute_unit_price_update(self):
         for rec in self:
+            converted_price =0
             unit_price_update = 0
             base_url = self.env['ir.config_parameter'].sudo().get_param('report.url') or self.env[
             'ir.config_parameter'].sudo().get_param('web.base.url')
@@ -68,12 +69,12 @@ class PoInfoWizard(models.TransientModel):
                     price_gold_type = price_gold_type * 1000
                 elif rec.product_uom_id.factor_inv < 1 and self.env.ref('uom.product_uom_gram').id != rec.product_uom_id.id:
                     price_gold_type = (price_gold_type * rec.product_uom_id.ratio) / 1000
-            unit_price_iq= usd_currency._convert(
-                    price_gold_type,
-                    rec.currency_id,
-                    rec.company_id,
-                    fields.Date.today(),)
-            converted_price = unit_price_iq
+                unit_price_iq= usd_currency._convert(
+                        price_gold_type,
+                        rec.currency_id,
+                        rec.company_id,
+                        fields.Date.today(),)
+                converted_price = unit_price_iq
             rec.unit_price_update = converted_price
            
     

@@ -5,9 +5,22 @@
         <field name="model">purchase.order</field>
         <field name="inherit_id" ref="purchase.purchase_order_form"/>
         <field name="arch" type="xml">
+             <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                 <field name="count_pure" invisible="1"/>
+            <button name="action_view_related_pure_gold"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-diamond" invisible="count_pure==0">
+                <field name="count_pure" string="View related Gold Pure" widget="statinfo"/>
+            </button>
+        
+            </xpath>
             <xpath expr="//form/sheet/notebook/page[@name='products']/field[@name='order_line']/list/field[@name='product_qty']" position="after">
                 <field name="purity" optional="show" readonly="1" column_invisible="parent.invoice_count == 0"/>
                 <field name="pure_gold" optional="show" readonly="1" column_invisible="parent.invoice_count == 0"/>
+                <field name="qty_check" optional="hide" readonly="1"/>
+                <field name="gold_ids" optional="hide" readonly="1"/>
+                <field name="requested_qty" optional="hide" readonly="1"/>
             </xpath>
             
 

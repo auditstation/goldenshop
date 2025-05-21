@@ -10,9 +10,9 @@ class AccountTax(models.Model):
     def _add_tax_details_in_base_line(self, base_line, company, rounding_method=None):
         price_unit_after_discount = base_line['price_unit'] * (1 - (base_line['discount'] / 100.0))
         if 'record' in base_line and base_line['record']!= None:
-            if 'purchase.order.line' in str(base_line['record']) and base_line['record'].purity != 0 :
+            if 'purchase.order.line' in str(base_line['record']) and base_line['record'].purity != 0:
                 price_unit_after_discount = base_line['price_unit'] * (1 - (base_line['discount'] / 100.0)) * base_line['record'].purity   
-            if 'account.move.line' in str(base_line['record']) and base_line['record'].purity != 0 :
+            if 'account.move.line' in str(base_line['record']) and base_line['record'].purity != 0:
                price_unit_after_discount = base_line['price_unit'] * (1 - (base_line['discount'] / 100.0)) * base_line['record'].purity   
         taxes_computation = base_line['tax_ids']._get_tax_details(
             price_unit=price_unit_after_discount,

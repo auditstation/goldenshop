@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- <record id="gold_wizard_form" model="ir.ui.view">
+        <field name="name">gold.wizard.form</field>
+        <field name="model">gold.wizard</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" create="0" delete="0">
+                <header>
+                    <button string="Confirm" name="confirm" type="object" class="btn-primary" data-hotkey="c" display="always"/>
+                    <button display="always" string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </header>
+                <field name="sequence"/>
+                <field name="product_id"/>
+                <field name="product_uom" readonly="1"/>
+                <field name="qty"/>
+                  <field name="selected" widget="boolean_toggle"/>
+                <field name="requested_qty" readonly="not selected"/>
+            </list>
+        </field>
+    </record> -->
+     <record id="gold_wizard_form_data" model="ir.ui.view">
+        <field name="name">gold.wizard.form</field>
+        <field name="model">gold.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                     <div class="oe_title">
+                    <h5>
+                        <field name="name_product" readonly="1"/>
+                    </h5>
+                </div>
+                <field name="product_lines">
+                    <list editable="bottom" create="0" delete="0">
+                        <field name="selected"/>
+                        <field name="sequence" readonly="1"/>
+                        <field name="partner_id" string="Vendor" readonly="1"/>
+                        <field name="product_id" readonly="1"/>
+                        <field name="product_uom" readonly="1" optional="hide"/>
+                        <field name="qty" optional="hide" readonly="1"/>
+                        <field name="quantity_purchase" string="Quantity(g)" readonly="1"/>
+                        <field name="requested_qty" readonly="not selected"/>
+                    </list>
+                </field>
+                   
+                 <footer>
+                    <button string="Confirm" name="confirm" type="object" class="btn-primary" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="x"/>
+                </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_gold_wizard_form" model="ir.actions.act_window">
+        <field name="name">Gold Purchase Informtion</field>
+        <field name="res_model">gold.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+
+</odoo>
