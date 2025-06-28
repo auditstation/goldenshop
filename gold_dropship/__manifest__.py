@@ -8,17 +8,22 @@
     'data': [
         'security/ir.model.access.csv',
         'data/data.xml',
+        'data/open_balnance.xml',
         'wizard/po_info_view_wiz.xml',
         'wizard/stock_gold_wiz.xml',
         'wizard/gold_info_wiz_view.xml',
+        'report/open_balance_report.xml',
         'views/sale_view.xml',
         'views/account_move_view.xml',
         'views/purchase_order_view.xml',
         'views/product_inherit.xml',
         'views/mrp.xml',
         'views/purchase_gold.xml',
+        'views/open_balance_view.xml',
         'views/menu_item.xml',
-        'report/gold_report.xml'
+        
+        'report/gold_report.xml',
+        
     ],
     'license': 'LGPL-3',
 }

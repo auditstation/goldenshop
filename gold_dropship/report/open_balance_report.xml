@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="open_balance_gold_report">
+            <t t-call="web.html_container">
+                <t t-if="report_type != 'pdf'">
+                <a href="/gold/report/excel" class="btn btn-primary" target="_blank">Export as Excel</a>
+                </t>
+    <t t-call="web.external_layout">
+        <div class="text-center">
+            <h2 style="color: goldenrod;">Opening Balance Report <t t-esc="datetime.datetime.now().strftime('%Y')"/></h2>
+
+        </div>
+
+        <table class="table table-sm" style="width: 100%; border: 1px solid #000;">
+            <thead style="background-color: #8B6914; color: white;">
+                <tr>
+                    <th style="text-align: center;">DATE</th>
+                    <th style="text-align: center;">Opening balance</th>
+                    <!-- <th style="text-align: center;">Open Balance Money IQD</th>
+                    <th style="text-align: center;">Open Balance Money USD</th> -->
+                    <th style="text-align: center;">NET PROFIT IQD</th>
+                    <th style="text-align: center;">NET PROFIT USD</th>
+                    
+                    <th style="text-align: center;">New balance</th>
+                </tr>
+            </thead>
+            <tbody>
+
+             <tr t-foreach="data" t-as="line">
+                 <!-- <t t-esc="context_tz(env.user.tz, line.get('date'))"/> -->
+                    <td t-esc="line.get('date')"/>
+                    <td t-esc="line.get('opening_balance')"/>
+                 <!-- <td t-esc="line.get('new_balance_money')"/>
+                 <td t-esc="line.get('new_balance_money_usd')"/>  -->
+                   <td t-esc="line.get('net_profit')"/>
+                    <td t-esc="line.get('net_profit_usd')"/>
+                 
+                  
+                    <td t-esc="line.get('new_balance')"/> 
+                
+               
+            </tr>
+            </tbody>
+        </table>
+    </t>
+</t>
+        </template>
+
+        <record id="action_report_open_balance" model="ir.actions.report">
+            <field name="name">Open Balance Report</field>
+            <field name="model">open.balance.gold</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">gold_dropship.open_balance_gold_report</field>
+            <field name="report_file">gold_dropship.open_balance_gold_report</field>
+            <!-- <field name="print_report_name">(object._get_report_base_filename())</field> -->
+            <field name="binding_model_id" ref="gold_dropship.model_open_balance_gold"/>
+            <field name="binding_type">report</field>
+
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="first_open_balance_gold_2" model="open.balance.gold">
+            <field name="read_only" eval="False"/>
+            <field name="new_balance_money">0.0</field>
+        </record>
+    </data>
+</odoo>

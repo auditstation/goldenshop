@@ -10,7 +10,7 @@ from . import stock_picking_edit
 from . import account_payment_register
 from . import mrp
 from . import purchase_order_inherit
-
+from . import open_blance
 
 
 

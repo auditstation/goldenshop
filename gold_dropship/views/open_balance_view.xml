@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="view_add_balance_form" model="ir.ui.view">
+        <field name="name">open balance</field>
+        <field name="model">open.balance.gold</field>
+        <field name="arch" type="xml">
+            <form string="open balance">
+                <sheet>
+                    <group>
+           
+                        <field name="date"/>
+                        <field name="read_only"/>
+                         <field name="new_balance"/>
+                        <field name="net_profit"/>
+                        <field name="currency_id"/>
+                        <field name="company_id"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_add_balance_list" model="ir.ui.view">
+        <field name="name">open balance</field>
+        <field name="model">open.balance.gold</field>
+        <field name="arch" type="xml">
+            <list string="open balance" create="0" delete="0" editable="bottom">
+                <field name="date"/>
+                <field name="read_only" column_invisible="True"/>
+                <field name="open_balance"/>
+                <!-- <field name="new_balance_money"/>
+                <field name="new_balance_money_usd"/> -->
+                <field name="net_profit" readonly="True" column_invisible="True"/>
+                <field name="net_profit_usd" column_invisible="True"/>
+                <field name="new_balance" readonly="True" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="company_id" column_invisible="True"/>
+  
+        </list>
+        </field>
+    </record>
+   
+    <record id="action_add_balance" model="ir.actions.act_window">
+        <field name="name">open balance</field>
+        <field name="res_model">open.balance.gold</field>
+        <field name="view_mode">list</field>
+        <field name="target">new</field>
+        <!-- <field name="domain"></field> -->
+
+    </record>
+    <record id="create_every_year_balanc_cron" model="ir.cron">
+            <field name="name">Crate Balance</field>
+            <field name="model_id" ref="gold_dropship.model_open_balance_gold"/>
+            <field name="state">code</field>
+            <field name="code">model.create_every_year()</field>
+            <field name="interval_number">12</field>
+            <field name="interval_type">months</field>
+         
+            <field name="active" eval="True"/>
+    </record>
+
+
+</odoo>

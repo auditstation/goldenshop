@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="action_balance_report_url" model="ir.actions.server">
+    <field name="name">Open Employee PDF</field>
+    <field name="model_id" ref="gold_dropship.model_open_balance_gold"/>
+    <field name="state">code</field>
+    <field name="code">action = model.create_and_update()
+    </field>
+</record>
     <menuitem
         name="Gold Dashborad"
         action="gold_dropship.stock_gold_action"
         id="stock_gold_menu"
         groups="stock.group_stock_manager"
-        parent="gold_dropship.menu_custom_order_root" sequence="200"/>
+        parent="gold_dropship.menu_custom_order_root" sequence="3"/>
+     <menuitem
+        id="menu_balance"
+        name="Open Balance"
+        parent="gold_dropship.menu_custom_order_root"
+        sequence="20"
+      />
+     <menuitem
+        id="menu_balance_html"
+        name="Open Balance Dashborad"
+        parent="gold_dropship.menu_balance"
+        action="action_balance_report_url"
+        sequence="100"
+      />
+    <menuitem
+        id="menu_add_balance"
+        name="Add Open Balance"
+        parent="gold_dropship.menu_balance"
+        action="action_add_balance"
+        sequence="100"
+      />
 
 </odoo>

@@ -5,3 +5,4 @@ access_purchase_gold,access.purchase.gold,model_purchase_gold,,1,1,1,1
 access_gold_wizard,access.gold.wizard,model_gold_wizard,,1,1,1,1
 access_gold_open,access.gold.open,model_gold_open,,1,1,1,1
 access_purchase_gold_info,access.purchase.gold.open,model_purchase_gold_info,,1,1,1,1
+access_open_balance_gold,access.open.balance.gold,model_open_balance_gold,,1,1,1,1
